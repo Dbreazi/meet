@@ -51,6 +51,12 @@
     ]
   },
   "devDependencies": {
-    "gh-pages": "^6.2.0"
-  }
+    "gh-pages": "^6.2.0",
+    "serverless": "^4.4.7"
+  },
+  "description": "This is a progressive web app (PWA) that allows users to view upcoming events for a selected city. It provides features such as filtering events by city, viewing event details, offline usage, and data visualization through charts. The app is built using **React**, **Create-React-App**, and is deployed to **GitHub Pages**.",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
