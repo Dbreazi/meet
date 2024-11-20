@@ -34,19 +34,20 @@ export const getEvents = async (token) => {
 export const getAccessToken = async () => {
   const accessToken = localStorage.getItem('access_token');
   if (accessToken) {
-    return accessToken;
+    return accessToken; // Return the token if it exists in localStorage
   }
 
   const searchParams = new URLSearchParams(window.location.search);
-  const code = searchParams.get("code");
+  const code = searchParams.get("code"); // This is the authorization code returned by Google
   
   if (!code) {
     const response = await fetch("https://ji7oro25e6.execute-api.us-east-1.amazonaws.com/dev/api/get-auth-url"); // Actual API endpoint for Google OAuth URL
     const result = await response.json();
     const { authUrl } = result;
-    window.location.href = authUrl; // Redirect to Google Auth
+    window.location.href = authUrl; // Redirect to Google to request the auth code
   } else {
-    const accessToken = await getToken(code);
+    const accessToken = await getToken(code); // Exchange the authorization code for the access token
+    removeQuery(); // Remove the code query parameter from the URL after successful authentication
     return accessToken;
   }
 };
@@ -61,6 +62,12 @@ const checkToken = async (accessToken) => {
     `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${accessToken}` // Actual API endpoint to check token validity
   );
   const result = await response.json();
+
+  if (result.error) {
+    localStorage.removeItem('access_token'); // Remove invalid token
+    return null; // Return null if token is invalid
+  }
+
   return result;
 };
 
@@ -71,14 +78,22 @@ const checkToken = async (accessToken) => {
  */
 const getToken = async (code) => {
   const encodeCode = encodeURIComponent(code);
-  const response = await fetch(
-    `https://ji7oro25e6.execute-api.us-east-1.amazonaws.com/dev/api/token/${encodeCode}` // Actual API endpoint for getting access token
-  );
-  const { access_token } = await response.json();
-  if (access_token) {
-    localStorage.setItem("access_token", access_token); // Store the token in localStorage
+  try {
+    const response = await fetch(
+      `https://ji7oro25e6.execute-api.us-east-1.amazonaws.com/dev/api/token/${encodeCode}` // Actual API endpoint for getting access token
+    );
+    const { access_token } = await response.json();
+    
+    if (access_token) {
+      localStorage.setItem("access_token", access_token); // Store the token in localStorage
+      return access_token;
+    } else {
+      throw new Error('Failed to retrieve access token');
+    }
+  } catch (error) {
+    console.error("Error getting access token:", error);
+    return null;
   }
-  return access_token;
 };
 
 /**
