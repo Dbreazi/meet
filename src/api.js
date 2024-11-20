@@ -22,7 +22,7 @@ export const getEvents = async (token) => {
     return mockData; // Return mock data during development
   }
 
-  const response = await fetch(`https://wawdvzibpk.execute-api.us-east-1.amazonaws.com/dev/api/get-events/${token}`); // Use your actual API endpoint
+  const response = await fetch(`https://ji7oro25e6.execute-api.us-east-1.amazonaws.com/dev/api/get-events/${token}`); // Actual API endpoint for events
   const result = await response.json();
   return result.events || null; // Return the events data or null if no events found
 };
@@ -41,7 +41,7 @@ export const getAccessToken = async () => {
   const code = searchParams.get("code");
   
   if (!code) {
-    const response = await fetch("https://wawdvzibpk.execute-api.us-east-1.amazonaws.com/dev/api/get-auth-url");
+    const response = await fetch("https://ji7oro25e6.execute-api.us-east-1.amazonaws.com/dev/api/get-auth-url"); // Actual API endpoint for Google OAuth URL
     const result = await response.json();
     const { authUrl } = result;
     window.location.href = authUrl; // Redirect to Google Auth
@@ -58,7 +58,7 @@ export const getAccessToken = async () => {
  */
 const checkToken = async (accessToken) => {
   const response = await fetch(
-    `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${accessToken}`
+    `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${accessToken}` // Actual API endpoint to check token validity
   );
   const result = await response.json();
   return result;
@@ -72,7 +72,7 @@ const checkToken = async (accessToken) => {
 const getToken = async (code) => {
   const encodeCode = encodeURIComponent(code);
   const response = await fetch(
-    `https://wawdvzibpk.execute-api.us-east-1.amazonaws.com/dev/api/token/${encodeCode}` // Use your actual API endpoint
+    `https://ji7oro25e6.execute-api.us-east-1.amazonaws.com/dev/api/token/${encodeCode}` // Actual API endpoint for getting access token
   );
   const { access_token } = await response.json();
   if (access_token) {
