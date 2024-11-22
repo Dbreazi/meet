@@ -1,10 +1,8 @@
-// src/App.js
-
+import { useEffect, useState } from 'react';
+import { getEvents, getAccessToken, extractLocations } from './api';
 import CitySearch from './components/CitySearch';
 import EventList from './components/EventList';
 import NumberOfEvents from './components/NumberOfEvents';
-import { useEffect, useState } from 'react';
-import { extractLocations, getEvents, getAccessToken } from './api';
 import './App.css';
 
 const App = () => {
@@ -15,58 +13,55 @@ const App = () => {
   const [authUrl, setAuthUrl] = useState('');
   
   useEffect(() => {
-    // Check if we have an access token in localStorage, if not, get the auth URL
     const token = localStorage.getItem('access_token');
     if (!token) {
-      fetchAuthUrl();
-    } else {
+      //fetchAuthUrl();
+    //} else {
       fetchData();
     }
-  }, [currentCity]);
+  }, [currentCity, currentNOE]);
 
-  const fetchAuthUrl = async () => {
-    // Call the API to get the authentication URL
+  /*const fetchAuthUrl = async () => {
     const url = await getAccessToken();
     if (!url) return;
-    setAuthUrl(url); // Set the auth URL to trigger a redirect to Google for authentication
-  };
+    setAuthUrl(url);
+  };*/
 
   const fetchData = async () => {
-    const token = await getAccessToken(); // Get the access token
-    if (!token) return;
+    // const token = await getAccessToken();
+    // if (!token) return;
 
-    // Fetch events after obtaining the access token
-    const allEvents = await getEvents(token); // Pass the token to get real events
-    const filteredEvents = currentCity === "See all cities" ?
-      allEvents :
+    const allEvents = await getEvents(); 
+    const filteredEvents = currentCity === "See all cities" ? 
+      allEvents : 
       allEvents.filter(event => event.location === currentCity);
-      
+
     setEvents(filteredEvents.slice(0, currentNOE));
     setAllLocations(extractLocations(allEvents));
   }
 
-  const handleAuthRedirect = () => {
+  /*const handleAuthRedirect = () => {
     if (authUrl) {
-      window.location.href = authUrl; // Redirect to Google's OAuth URL
+      window.location.href = authUrl;
     }
-  };
+  };*/
 
   return (
     <div className="App">
-      {authUrl ? (
+      {/* {authUrl ? (
         <div>
           <h1>Sign In with Google</h1>
           <button onClick={handleAuthRedirect}>Sign In</button>
         </div>
-      ) : (
+      ) : ( */}
         <>
           <CitySearch allLocations={allLocations} setCurrentCity={setCurrentCity} />
           <NumberOfEvents currentNOE={currentNOE} setCurrentNOE={setCurrentNOE} />
           <EventList events={events} />
         </>
-      )}
+      {/* )} */}
     </div>
   );
-}
+};
 
 export default App;

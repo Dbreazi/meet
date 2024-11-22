@@ -1,5 +1,3 @@
-// src/api.js
-
 import mockData from './mock-data';
 
 /**
@@ -17,11 +15,12 @@ export const extractLocations = (events) => {
  * Fetches the list of events.
  * @returns Events data or mock data (if on localhost).
  */
-export const getEvents = async (token) => {
-  if (window.location.href.startsWith("http://localhost")) {
-    return mockData; // Return mock data during development
-  }
-
+export const getEvents = async () => {
+  // if (window.location.href.startsWith("http://localhost")) {
+  //   return mockData; // Return mock data during development
+  // }
+  const token = await getAccessToken();
+  removeQuery();
   const response = await fetch(`https://ji7oro25e6.execute-api.us-east-1.amazonaws.com/dev/api/get-events/${token}`); // Actual API endpoint for events
   const result = await response.json();
   return result.events || null; // Return the events data or null if no events found
