@@ -1,30 +1,36 @@
-import { useState } from 'react';
+// src/components/NumberOfEvents.js
 
-const NumberOfEvents = ({ currentNOE, setCurrentNOE }) => {
+import { useState } from "react";
 
-  const handleChange = (event) => {
-    const value = event.target.value;
-    const numericValue = Number(value); // Convert to number
-    if (numericValue >= 1) {
-      setCurrentNOE(numericValue); // Set the number value
-    } else {
-      setCurrentNOE(1); // Default to 1 if negative value entered
-    }
-  };
+const NumberOfEvents = ({ currentNOE, setCurrentNOE, setErrorAlert }) => {
+    const [number, setNumber] = useState(currentNOE);
+    
+    const handleInputChanged = (event) => {
+        const value = event.target.value;
+        setNumber(value);
+        if (isNaN(value) || value <= 0) {
+            setErrorAlert('Enter a valid number');
+        } else if (value > 32) {
+            setErrorAlert('Only a maximum of 32 is allowed');
+        } else {
+            setErrorAlert('');
+            setCurrentNOE(value);
+        }
+    };
 
-  return (
-    <div id="number-of-events">
-      <label htmlFor="number-of-events-input">Number of Events: </label>
-      <input
-        id="number-of-events-input"
-        type="number"
-        value={currentNOE}
-        onChange={handleChange}
-        min="1"
-        data-testid="number-of-events"
-      />
-    </div>
-  );
+    return (
+        <div id="number-of-events">
+            <label>
+                Number of Events:
+                <input 
+                    type="text"
+                    value={number}
+                    onChange={handleInputChanged}
+                    data-testid="numberOfEventsInput"
+                />
+            </label>
+        </div>
+    );
 };
 
 export default NumberOfEvents;

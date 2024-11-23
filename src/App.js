@@ -1,67 +1,53 @@
-import { useEffect, useState } from 'react';
-import { getEvents, getAccessToken, extractLocations } from './api';
-import CitySearch from './components/CitySearch';
-import EventList from './components/EventList';
-import NumberOfEvents from './components/NumberOfEvents';
+// src/App.js
+
 import './App.css';
+import EventList from './components/EventList';
+import CitySearch from './components/CitySearch';
+import NumberOfEvents from './components/NumberOfEvents';
+import { useEffect, useState } from 'react';
+import { extractLocations, getEvents } from './api'; // Import your api functions
 
 const App = () => {
-  const [allLocations, setAllLocations] = useState([]);
-  const [currentNOE, setCurrentNOE] = useState(32); // Default number of events
   const [events, setEvents] = useState([]);
+  const [currentNOE, setCurrentNOE] = useState(32); // Default number of events
+  const [allLocations, setAllLocations] = useState([]);
   const [currentCity, setCurrentCity] = useState("See all cities");
-  const [authUrl, setAuthUrl] = useState('');
-  
+  const [errorAlert, setErrorAlert] = useState(""); // For error handling
+
+  // Fetch data whenever the city or number of events changes
   useEffect(() => {
-    const token = localStorage.getItem('access_token');
-    if (!token) {
-      //fetchAuthUrl();
-    //} else {
-      fetchData();
-    }
+    fetchData();
   }, [currentCity, currentNOE]);
 
-  /*const fetchAuthUrl = async () => {
-    const url = await getAccessToken();
-    if (!url) return;
-    setAuthUrl(url);
-  };*/
-
+  // Function to fetch events and locations
   const fetchData = async () => {
-    // const token = await getAccessToken();
-    // if (!token) return;
-
-    const allEvents = await getEvents(); 
-    const filteredEvents = currentCity === "See all cities" ? 
-      allEvents : 
-      allEvents.filter(event => event.location === currentCity);
-
-    setEvents(filteredEvents.slice(0, currentNOE));
-    setAllLocations(extractLocations(allEvents));
-  }
-
-  /*const handleAuthRedirect = () => {
-    if (authUrl) {
-      window.location.href = authUrl;
+    try {
+      const allEvents = await getEvents(); // Fetch events from the API or mock data
+      const filteredEvents = currentCity === "See all cities" ?
+        allEvents : allEvents.filter(event => event.location === currentCity); // Filter based on city
+      setEvents(filteredEvents.slice(0, currentNOE)); // Limit to the specified number of events
+      setAllLocations(extractLocations(allEvents)); // Extract unique locations
+    } catch (error) {
+      console.error("Error fetching events:", error);
+      setErrorAlert("Something went wrong. Please try again.");
     }
-  };*/
+  };
 
   return (
     <div className="App">
-      {/* {authUrl ? (
-        <div>
-          <h1>Sign In with Google</h1>
-          <button onClick={handleAuthRedirect}>Sign In</button>
-        </div>
-      ) : ( */}
-        <>
-          <CitySearch allLocations={allLocations} setCurrentCity={setCurrentCity} />
-          <NumberOfEvents currentNOE={currentNOE} setCurrentNOE={setCurrentNOE} />
-          <EventList events={events} />
-        </>
-      {/* )} */}
+      <CitySearch 
+        allLocations={allLocations} 
+        setCurrentCity={setCurrentCity} 
+      />
+      <EventList events={events} />
+      <NumberOfEvents 
+        setErrorAlert={setErrorAlert}
+        currentNOE={currentNOE}
+        setCurrentNOE={setCurrentNOE}
+      />
+      {errorAlert && <div className="error">{errorAlert}</div>} {/* Display error alert if any */}
     </div>
   );
-};
+}
 
 export default App;
