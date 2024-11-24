@@ -1,4 +1,6 @@
-import { render, screen, within, waitFor } from '@testing-library/react';  // Add 'within' here
+// src/__tests__/EventList.test.js
+
+import { render, screen, within, waitFor } from '@testing-library/react';
 import { getEvents } from '../api';
 import EventList from '../components/EventList';
 import App from "../App";
@@ -22,16 +24,16 @@ describe('<EventList /> component', () => {
     render(<EventList events={[]} />);
 
     // Check that no list items are rendered when there are no events
-    expect(screen.queryByRole('listitem')).toBeNull();  // No list items should be rendered
+    expect(screen.queryByRole('listitem')).toBeNull();
   });
 
-  test('renders an error message for invalid event data', () => {
+  test('renders fallback messages for invalid event data', () => {
     const invalidEventList = [{ id: 1, summary: null, created: 'invalid-date', location: null }];
     render(<EventList events={invalidEventList} />);
 
-    // Check if the invalid event data is handled, could be a message or fallback UI
-    expect(screen.getByText(/No title/)).toBeInTheDocument(); // Check for fallback when data is invalid
-    expect(screen.getByText(/Location not available/)).toBeInTheDocument(); // Fallback location
+    // Check for fallback UI for invalid data
+    expect(screen.getByText(/No title/)).toBeInTheDocument();
+    expect(screen.getByText(/Location not available/)).toBeInTheDocument();
   });
 });
 

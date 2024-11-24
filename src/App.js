@@ -5,28 +5,28 @@ import EventList from './components/EventList';
 import CitySearch from './components/CitySearch';
 import NumberOfEvents from './components/NumberOfEvents';
 import { useEffect, useState } from 'react';
-import { extractLocations, getEvents } from './api'; // Import your api functions
+import { extractLocations, getEvents } from './api';
 
 const App = () => {
   const [events, setEvents] = useState([]);
-  const [currentNOE, setCurrentNOE] = useState(32); // Default number of events
+  const [currentNOE, setCurrentNOE] = useState(32);
   const [allLocations, setAllLocations] = useState([]);
   const [currentCity, setCurrentCity] = useState("See all cities");
-  const [errorAlert, setErrorAlert] = useState(""); // For error handling
+  const [errorAlert, setErrorAlert] = useState("");
 
-  // Fetch data whenever the city or number of events changes
   useEffect(() => {
     fetchData();
   }, [currentCity, currentNOE]);
 
-  // Function to fetch events and locations
   const fetchData = async () => {
     try {
-      const allEvents = await getEvents(); // Fetch events from the API or mock data
-      const filteredEvents = currentCity === "See all cities" ?
-        allEvents : allEvents.filter(event => event.location === currentCity); // Filter based on city
-      setEvents(filteredEvents.slice(0, currentNOE)); // Limit to the specified number of events
-      setAllLocations(extractLocations(allEvents)); // Extract unique locations
+      const allEvents = await getEvents();
+      const filteredEvents = currentCity === "See all cities" 
+        ? allEvents 
+        : allEvents.filter(event => event.location === currentCity);
+      
+      setEvents(filteredEvents.slice(0, currentNOE));
+      setAllLocations(extractLocations(allEvents));
     } catch (error) {
       console.error("Error fetching events:", error);
       setErrorAlert("Something went wrong. Please try again.");
@@ -35,7 +35,6 @@ const App = () => {
 
   return (
     <div className="App">
-      {/* Search Container for City Search and Number of Events */}
       <div className="search-container">
         <CitySearch 
           allLocations={allLocations} 
@@ -48,9 +47,9 @@ const App = () => {
         />
       </div>
       <EventList events={events} />
-      {errorAlert && <div className="error">{errorAlert}</div>} {/* Display error alert if any */}
+      {errorAlert && <div className="error">{errorAlert}</div>}
     </div>
   );
-}
+};
 
 export default App;

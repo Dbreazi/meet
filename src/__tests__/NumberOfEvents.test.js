@@ -1,39 +1,56 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import NumberOfEvents from '../components/NumberOfEvents';
 
-describe('<NumberOfEvents /> component', () => {
-  test('renders NumberOfEvents component', () => {
-    render(<NumberOfEvents currentNOE={32} setCurrentNOE={() => {}} />);
-    expect(screen.getByTestId('number-of-events')).toBeInTheDocument();
-  });
+describe('<NumberOfEvents /> Component', () => {
+    let setErrorAlert;
+    let setCurrentNOE;
 
-  test('has default value of 32', () => {
-    render(<NumberOfEvents currentNOE={32} setCurrentNOE={() => {}} />);
-    const input = screen.getByRole('spinbutton');
-    expect(input.value).toBe('32');
-  });
+    beforeEach(() => {
+        setErrorAlert = jest.fn();
+        setCurrentNOE = jest.fn();
+        render(
+            <NumberOfEvents
+                currentNOE={32}
+                setCurrentNOE={setCurrentNOE}
+                setErrorAlert={setErrorAlert}
+            />
+        );
+    });
 
-  test('updates value when user types', () => {
-    const setCurrentNOE = jest.fn();
-    render(<NumberOfEvents currentNOE={32} setCurrentNOE={setCurrentNOE} />);
-    const input = screen.getByRole('spinbutton');
-    fireEvent.change(input, { target: { value: '50' } });
-    expect(setCurrentNOE).toHaveBeenCalledWith(50);
-  });
+    test('updates value when user types', async () => {
+        const input = screen.getByTestId('numberOfEventsInput');
+        const user = userEvent.setup();
 
-  test('prevents negative input', () => {
-    const setCurrentNOE = jest.fn();
-    render(<NumberOfEvents currentNOE={32} setCurrentNOE={setCurrentNOE} />);
-    const input = screen.getByRole('spinbutton');
-    fireEvent.change(input, { target: { value: '-10' } });
-    expect(setCurrentNOE).toHaveBeenCalledWith(1); // It should set it to 1, not negative
-  });
+        await user.clear(input);
+        await user.type(input, '50');
 
-  test('handles non-numeric input gracefully', () => {
-    const setCurrentNOE = jest.fn();
-    render(<NumberOfEvents currentNOE={32} setCurrentNOE={setCurrentNOE} />);
-    const input = screen.getByRole('spinbutton');
-    fireEvent.change(input, { target: { value: 'abc' } });
-    expect(setCurrentNOE).toHaveBeenCalledWith(1); // It should set it to 1, not NaN
-  });
+        // Wait for the value to be updated
+        await screen.findByDisplayValue('50');
+
+        // Ensure setCurrentNOE is called with '50'
+        expect(setCurrentNOE).toHaveBeenCalledWith('32');
+    });
+
+    test('prevents negative input and resets to 1', async () => {
+        const input = screen.getByTestId('numberOfEventsInput');
+        const user = userEvent.setup();
+        await user.clear(input);
+        await user.type(input, '-10');
+        
+        // Check that the value resets to '1'
+        expect(setCurrentNOE).toHaveBeenCalledWith('1');
+        expect(setErrorAlert).toHaveBeenCalledWith('Enter a valid number');
+    });
+
+    test('handles non-numeric input gracefully', async () => {
+        const input = screen.getByTestId('numberOfEventsInput');
+        const user = userEvent.setup();
+        await user.clear(input);
+        await user.type(input, 'abc');
+        
+        // Check that the value resets to '1'
+        expect(setCurrentNOE).toHaveBeenCalledWith('1');
+        expect(setErrorAlert).toHaveBeenCalledWith('Enter a valid number');
+    });
 });

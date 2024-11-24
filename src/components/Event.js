@@ -5,9 +5,6 @@ import { useState } from 'react';
 const Event = ({ event }) => {
   const [showDetails, setShowDetails] = useState(false);
 
-  // Log the event object to check its contents
-  console.log(event); // Should log the event object, including the description
-
   return (
     <li>
       <div className="eventSummary">
@@ -18,13 +15,13 @@ const Event = ({ event }) => {
           day: 'numeric',
           month: 'short',
           year: 'numeric',
-        })}</p> {/* Formatting created date */}
+        })}</p>
       </div>
-      {showDetails ? (
+      {showDetails && (
         <div className="eventDetails">
-          <p>{event.description || 'No details available'}</p> {/* Fallback for missing description */}
+          <p>{event.description || 'No details available'}</p>
         </div>
-      ) : null}
+      )}
       <button className="show-details-btn" onClick={() => setShowDetails(!showDetails)}>
         {showDetails ? "Hide Details" : "Show Details"}
       </button>

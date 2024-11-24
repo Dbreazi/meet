@@ -4,82 +4,54 @@ import mockData from './mock-data';
 
 /**
  * Extracts unique locations from the events array.
- * @param {*} events - The array of events.
- * @returns An array of unique locations.
  */
 export const extractLocations = (events) => {
-  const extractedLocations = events.map((event) => event.location);
-  const locations = [...new Set(extractedLocations)];
-  return locations;
+  return [...new Set(events.map(event => event.location))];
 };
 
 /**
- * Fetches the list of events.
- * @returns Events data or mock data (if on localhost).
+ * Fetches the list of events (mock data during development).
  */
 export const getEvents = async () => {
   if (window.location.href.startsWith("http://localhost")) {
     return mockData; // Return mock data during development
   }
 
-  const token = await getAccessToken(); // Get the access token
-
+  const token = await getAccessToken();
   if (token) {
-    removeQuery(); // Clean up the URL
+    removeQuery();
     const url = `https://ji7oro25e6.execute-api.us-east-1.amazonaws.com/dev/api/get-events/${token}`;
     const response = await fetch(url);
     const result = await response.json();
-    return result.events || []; // Return the events or an empty array if no events found
+    return result.events || [];
   }
   return [];
 };
 
 /**
- * Removes the code query parameter from the URL after successful authentication.
+ * Removes the query parameter from the URL after successful authentication.
  */
 const removeQuery = () => {
-  let newurl;
-  if (window.history.pushState && window.location.pathname) {
-    newurl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-    window.history.pushState("", "", newurl);
-  } else {
-    newurl = window.location.protocol + "//" + window.location.host;
-    window.history.pushState("", "", newurl);
-  }
+  let newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+  window.history.pushState("", "", newUrl);
 };
 
 /**
- * Checks the validity of the access token by querying Google's token info endpoint.
- * @param {*} accessToken - The access token to be checked.
- * @returns The result of the token check (valid/invalid).
- */
-const checkToken = async (accessToken) => {
-  const response = await fetch(
-    `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${accessToken}`
-  );
-  const result = await response.json();
-  return result;
-};
-
-/**
- * Retrieves the access token from localStorage or redirects the user to the Google Authorization screen.
- * @returns Access token or redirects the user for authorization.
+ * Retrieves the access token from localStorage or redirects to Google Authorization.
  */
 export const getAccessToken = async () => {
   const accessToken = localStorage.getItem('access_token');
-  const tokenCheck = accessToken && (await checkToken(accessToken));
+  const tokenCheck = accessToken && await checkToken(accessToken);
 
   if (!accessToken || tokenCheck.error) {
     await localStorage.removeItem("access_token");
     const searchParams = new URLSearchParams(window.location.search);
-    const code = await searchParams.get("code");
+    const code = searchParams.get("code");
+
     if (!code) {
-      const response = await fetch(
-        "https://ji7oro25e6.execute-api.us-east-1.amazonaws.com/dev/api/get-auth-url"
-      );
+      const response = await fetch("https://ji7oro25e6.execute-api.us-east-1.amazonaws.com/dev/api/get-auth-url");
       const result = await response.json();
-      const { authUrl } = result;
-      return (window.location.href = authUrl); // Redirect to Google Auth if no token is found
+      return window.location.href = result.authUrl;
     }
     return code && getToken(code);
   }
@@ -88,8 +60,6 @@ export const getAccessToken = async () => {
 
 /**
  * Fetches a new access token using the authorization code from Google.
- * @param {*} code - The authorization code returned from Google.
- * @returns The access token.
  */
 const getToken = async (code) => {
   const encodeCode = encodeURIComponent(code);
@@ -97,6 +67,14 @@ const getToken = async (code) => {
     `https://ji7oro25e6.execute-api.us-east-1.amazonaws.com/dev/api/token/${encodeCode}`
   );
   const { access_token } = await response.json();
-  access_token && localStorage.setItem("access_token", access_token); // Store the token in localStorage
+  access_token && localStorage.setItem("access_token", access_token);
   return access_token;
+};
+
+/**
+ * Checks the validity of the access token by querying Google's token info endpoint.
+ */
+const checkToken = async (accessToken) => {
+  const response = await fetch(`https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${accessToken}`);
+  return await response.json();
 };
