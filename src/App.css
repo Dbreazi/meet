@@ -83,3 +83,14 @@ button.show-details-btn {
   border-radius: 5px;
   text-align: center;
 }
+
+
+.alerts-container {
+  position: fixed;
+  left: 50%; /* Position the container in the middle horizontally */
+  transform: translate(-50%, -50%); /* Offset the container by half of its width and height */
+  width: 250px;
+  z-index: 1000;
+  text-align: center; /* Center the text inside the alert */
+  margin-top: 3%;
+}

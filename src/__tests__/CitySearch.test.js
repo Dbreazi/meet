@@ -7,7 +7,12 @@ describe('<CitySearch /> component', () => {
   let CitySearchComponent;
 
   beforeEach(() => {
-    CitySearchComponent = render(<CitySearch allLocations={[]} setCurrentCity={() => {}} />);
+    // Mocking setInfoAlert as an empty function
+    CitySearchComponent = render(<CitySearch 
+      allLocations={[]} 
+      setCurrentCity={() => {}} 
+      setInfoAlert={() => {}} // Mocked here
+    />);
   });
 
   test('renders text input', () => {
@@ -36,7 +41,7 @@ describe('<CitySearch /> component', () => {
     const user = userEvent.setup();
     const allEvents = await getEvents();
     const allLocations = extractLocations(allEvents);
-    CitySearchComponent.rerender(<CitySearch allLocations={allLocations} setCurrentCity={() => {}} />);
+    CitySearchComponent.rerender(<CitySearch allLocations={allLocations} setCurrentCity={() => {}} setInfoAlert={() => {}} />);
 
     const cityTextBox = screen.queryByRole('textbox');
     await user.type(cityTextBox, "Berlin");
@@ -54,7 +59,7 @@ describe('<CitySearch /> component', () => {
     const user = userEvent.setup();
     const allEvents = await getEvents();
     const allLocations = extractLocations(allEvents);
-    CitySearchComponent.rerender(<CitySearch allLocations={allLocations} setCurrentCity={() => {}} />);
+    CitySearchComponent.rerender(<CitySearch allLocations={allLocations} setCurrentCity={() => {}} setInfoAlert={() => {}} />);
 
     const cityTextBox = screen.queryByRole('textbox');
     await user.type(cityTextBox, "Berlin");
@@ -68,7 +73,7 @@ describe('<CitySearch /> component', () => {
 
 describe('<CitySearch /> edge cases', () => {
   test('shows all events when no city is selected', async () => {
-    const { queryByRole, queryAllByRole } = render(<CitySearch allLocations={[]} setCurrentCity={() => {}} />);
+    const { queryByRole, queryAllByRole } = render(<CitySearch allLocations={[]} setCurrentCity={() => {}} setInfoAlert={() => {}} />);
     const cityTextBox = queryByRole('textbox');
     await userEvent.clear(cityTextBox); // Clear the textbox
 
@@ -77,7 +82,7 @@ describe('<CitySearch /> edge cases', () => {
   });
 
   test('shows no events when a non-existent city is searched', async () => {
-    const { queryByRole, queryAllByRole } = render(<CitySearch allLocations={[]} setCurrentCity={() => {}} />);
+    const { queryByRole, queryAllByRole } = render(<CitySearch allLocations={[]} setCurrentCity={() => {}} setInfoAlert={() => {}} />);
     const cityTextBox = queryByRole('textbox');
     await userEvent.type(cityTextBox, "NonExistentCity");
 
