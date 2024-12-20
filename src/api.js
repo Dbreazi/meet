@@ -1,5 +1,3 @@
-// src/api.js
-
 import mockData from './mock-data';
 
 /**
@@ -17,13 +15,27 @@ export const getEvents = async () => {
     return mockData; // Return mock data during development
   }
 
+  // Check if the user is offline
+  if (!navigator.onLine) {
+    const cachedEvents = localStorage.getItem("lastEvents"); // Get events from localStorage
+    if (cachedEvents) {
+      return JSON.parse(cachedEvents); // Return cached events if available
+    }
+    return []; // If no cached events, return empty array
+  }
+
+  // If the user is online, fetch events from the API
   const token = await getAccessToken();
   if (token) {
     removeQuery();
     const url = `https://ji7oro25e6.execute-api.us-east-1.amazonaws.com/dev/api/get-events/${token}`;
     const response = await fetch(url);
     const result = await response.json();
-    return result.events || [];
+    if (result && result.events) {
+      // Save the events to localStorage for offline use
+      localStorage.setItem("lastEvents", JSON.stringify(result.events));
+      return result.events;
+    }
   }
   return [];
 };
