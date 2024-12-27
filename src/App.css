@@ -17,25 +17,46 @@ body {
   background-color: white;
   border-radius: 8px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  position: relative; /* To position the logo within the App container */
 }
 
-/* Flex container for City Search and Number of Events (side by side) */
+/* Flex container for City Search and Number of Events (vertically stacked) */
 .search-container {
   display: flex;
-  justify-content: space-between;
-  gap: 20px; /* Space between the fields */
+  flex-direction: column; /* Stack inputs vertically */
+  align-items: flex-start;
+  gap: 10px; /* Space between the fields */
   margin-bottom: 20px;
-  align-items: center;
+  position: relative; /* To handle positioning the logo inside this container */
 }
 
 /* City Search Section */
 #city-search {
-  flex: 1; /* Take up remaining space */
+  width: 100%; /* Take up full width */
+  min-width: 200px;
 }
 
 /* Number of Events Section */
 #number-of-events {
-  flex: 0 0 150px; /* Fixed width for the number of events field */
+  width: 100%; /* Take up full width */
+  min-width: 200px;
+}
+
+/* Logo Section (positioned at top right) */
+.app-logo {
+  background-color: black;
+  color: white;
+  padding: 10px 20px;
+  font-size: 40px;
+  font-weight: bold;
+  border-radius: px;
+  text-align: center;
+  height: fit-content;
+  display: inline-block;
+  position: absolute; 
+  right: 0;
+  top: 0;
+  min-width: 200px;
 }
 
 /* Event List Styling */
@@ -85,26 +106,26 @@ button.show-details-btn {
   text-align: center;
 }
 
-
 .alerts-container {
   position: fixed;
-  left: 50%; /* Position the container in the middle horizontally */
-  transform: translate(-50%, -50%); /* Offset the container by half of its width and height */
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 250px;
   z-index: 1000;
-  text-align: center; /* Center the text inside the alert */
+  text-align: center;
   margin-top: 3%;
 }
 
-
+/* Chart Container (Responsive) */
 .charts-container {
   display: grid;
-  grid-template-columns: 1fr 1fr; 
+  grid-template-columns: 1fr 1fr;
   gap: 20px;
+  padding: 20px;
 }
 
 @media (max-width: 1000px) {
   .charts-container {
-    grid-template-columns: 1fr; 
+    grid-template-columns: 1fr;
   }
 }

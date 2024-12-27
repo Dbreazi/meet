@@ -26,15 +26,13 @@ const NumberOfEvents = ({ currentNOE, setCurrentNOE, setErrorAlert }) => {
 
     return (
         <div id="number-of-events">
-            <label>
-                Number of Events:
-                <input
-                    type="text"
-                    value={number}
-                    onChange={handleInputChanged}
-                    data-testid="numberOfEventsInput"
-                />
-            </label>
+            <input
+                type="text"
+                value={number}
+                onChange={handleInputChanged}
+                placeholder="Number of Events"  // Add placeholder text here
+                data-testid="numberOfEventsInput"
+            />
         </div>
     );
 };

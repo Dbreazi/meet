@@ -1,11 +1,10 @@
 // src/App.js
-
 import './App.css';
 import EventList from './components/EventList';
 import CitySearch from './components/CitySearch';
 import NumberOfEvents from './components/NumberOfEvents';
 import CityEventsChart from './components/CityEventsChart'; 
-import EventGenresChart from './components/EventGenresChart'; // Import EventGenresChart
+import EventGenresChart from './components/EventGenresChart'; 
 import { useEffect, useState } from 'react';
 import { extractLocations, getEvents } from './api';
 import { InfoAlert, ErrorAlert, WarningAlert } from './components/Alert';
@@ -67,6 +66,7 @@ const App = () => {
           setCurrentNOE={setCurrentNOE} 
           setErrorAlert={setErrorAlert} 
         />
+        <div className="app-logo">MEET APP</div> {/* Logo text */}
       </div>
       {/* Container for both charts */}
       <div className="charts-container">
