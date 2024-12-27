@@ -12,28 +12,27 @@ import {
 const CityEventsChart = ({ allLocations, events }) => {
   const [data, setData] = useState([]);
 
-  
   const getData = () => {
     const data = allLocations.map((location) => {
       const count = events.filter((event) => event.location === location).length;
-      const city = location.split(/, | - /)[0]; 
-      return { city, count }; 
+      const city = location.split(/, | - /)[0];
+      return { city, count };
     });
     return data;
   };
 
   useEffect(() => {
     setData(getData());
-  }, [events, allLocations]); 
+  }, [events, allLocations]);
 
   return (
-    <ResponsiveContainer width="99%" height={400}>
+    <ResponsiveContainer width="100%" height={400}>
       <ScatterChart
         margin={{
           top: 20,
           right: 20,
-          bottom: 60, 
-          left: -30,  
+          bottom: 60,
+          left: -30,
         }}
       >
         <CartesianGrid />
@@ -43,13 +42,13 @@ const CityEventsChart = ({ allLocations, events }) => {
           name="City"
           angle={60}
           interval={0}
-          tick={{ dx: 20, dy: 40, fontSize: 14 }} // 
+          tick={{ dx: 20, dy: 40, fontSize: 14 }}
         />
         <YAxis
           type="number"
           dataKey="count"
           name="Number of events"
-          allowDecimals={false} // 
+          allowDecimals={false}
         />
         <Tooltip cursor={{ strokeDasharray: '3 3' }} />
         <Scatter name="Events by City" data={data} fill="#8884d8" />

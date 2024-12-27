@@ -10,7 +10,7 @@ body {
 
 /* Styling for the app container */
 .App {
-  max-width: 800px;
+  max-width: 1000px; /* Increased max-width for more space */
   margin: 0 auto;
   padding: 20px;
   background-color: white;
@@ -25,16 +25,21 @@ body {
   gap: 20px; /* Space between the fields */
   margin-bottom: 20px;
   align-items: center;
+  flex-wrap: wrap; /* Allow items to wrap on smaller screens */
 }
 
 /* City Search Section */
 #city-search {
   flex: 1; /* Take up remaining space */
+  min-width: 200px; /* Prevent shrinking on small screens */
 }
 
 /* Number of Events Section */
 #number-of-events {
-  flex: 0 0 150px; /* Fixed width for the number of events field */
+  flex: 1;
+  min-width: 200px; /* Ensure it doesn't overflow */
+  max-width: 250px;
+  margin-top: 10px; /* Slight spacing adjustment for smaller screens */
 }
 
 /* Event List Styling */
@@ -84,7 +89,7 @@ button.show-details-btn {
   text-align: center;
 }
 
-
+/* Alerts */
 .alerts-container {
   position: fixed;
   left: 50%; /* Position the container in the middle horizontally */
@@ -95,15 +100,25 @@ button.show-details-btn {
   margin-top: 3%;
 }
 
-
+/* Chart Container (Responsive) */
 .charts-container {
   display: grid;
-  grid-template-columns: 1fr 1fr; 
+  grid-template-columns: 1fr 1fr;
   gap: 20px;
+  min-width: 600px; /* Ensure enough space for both charts */
 }
 
 @media (max-width: 768px) {
   .charts-container {
-    grid-template-columns: 1fr; 
+    grid-template-columns: 1fr; /* Stack charts on small screens */
+    min-width: 100%; /* Full-width for small screens */
+  }
+  
+  /* Adjust City Search and Number of Events input on smaller screens */
+  .search-container {
+    flex-direction: column; /* Stack inputs on smaller screens */
+  }
+  #city-search, #number-of-events {
+    min-width: 100%; /* Ensure they take full width */
   }
 }
